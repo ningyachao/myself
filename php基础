@@ -1,0 +1,37 @@
+php 基础知识(下面是常遇到的几个坑);掌握以下几个要素 可快速提高你的代码速度
+1. 列表页
+	分页是个坑,尤其是在带有查询条件或搜索条件下的分页,需格外注意 "分页"点击下一页时  跳转的过程中需要带着 查询条件和搜索条件的
+2. 验证码
+	需要知道原来,并且能调用框架写出来;最好是能用原声php写出来最好
+3. session和cookie的区别
+	具体来说cookie机制采用的是在客户端保持状态的方案，而session机制采用的是在服务器端保持状态的方案。同时我们也看到，由于采用服务器端保持状态的方案在客户端也需要保存一个标识，所以session机制可能需要借助于cookie机制来达到保存标识的目的，但实际上它还有其他选择。
+
+    cookie机制。正统的cookie分发是通过扩展HTTP协议来实现的，服务器通过在HTTP的响应头中加上一行特殊的指示以提示浏览器按照指示生成相应的cookie。然而纯粹的客户端脚本如JavaScript或者VBScript也可以生成cookie。而cookie的使用是由浏览器按照一定的原则在后台自动发送给服务器的。浏览器检查所有存储的cookie，如果某个cookie所声明的作用范围大于等于将要请求的资源所在的位置，则把该cookie附在请求资源的HTTP请求头上发送给服务器。
+    cookie的内容主要包括：名字，值，过期时间，路径和域。路径与域一起构成cookie的作用范围。若不设置过期时间，则表示这个cookie的生命期为浏览器会话期间，关闭浏览器窗口，cookie就消失。这种生命期为浏览器会话期的cookie被称为会话cookie。会话cookie一般不存储在硬盘上而是保存在内存里，当然这种行为并不是规范规定的。若设置了过期时间，浏览器就会把cookie保存到硬盘上，关闭后再次打开浏览器，这些cookie仍然有效直到超过设定的过期时间。存储在硬盘上的cookie可以在不同的浏览器进程间共享，比如两个IE窗口。而对于保存在内存里的cookie，不同的浏览器有不同的处理方式
+    session机制。session机制是一种服务器端的机制，服务器使用一种类似于散列表的结构（也可能就是使用散列表）来保存信息。
+  
+    当程序需要为某个客户端的请求创建一个session时，服务器首先检查这个客户端的请求里是否已包含了一个session标识（称为session id），如果已包含则说明以前已经为此客户端创建过session，服务器就按照session id把这个session检索出来使用（检索不到，会新建一个），如果客户端请求不包含session id，则为此客户端创建一个session并且生成一个与此session相关联的session id，session id的值应该是一个既不会重复，又不容易被找到规律以仿造的字符串，这个session id将被在本次响应中返回给客户端保存。
+    保存这个session id的方式可以采用cookie，这样在交互过程中浏览器可以自动的按照规则把这个标识发挥给服务器。一般这个cookie的名字都是类似于SEEESIONID。但cookie可以被人为的禁止，则必须有其他机制以便在cookie被禁止时仍然能够把session id传递回服务器。
+    经常被使用的一种技术叫做URL重写，就是把session id直接附加在URL路径的后面。还有一种技术叫做表单隐藏字段。就是服务器会自动修改表单，添加一个隐藏字段，以便在表单提交时能够把session id传递回服务器
+
+    总 结: 当用户访问时,服务器会将session信息保存在服务器的类似散列表这样的结构中,并且返回给客户端一个SESSIONID(唯一标识),浏览器将SESSIONID保存在cookie里.当用户再次访问服务器时http协议会携带cookie信息一起去访问服务器,服务器会检索cookie信息去查找SESSIONID,然后服务器就按照SESSIONID把这个session检索出来使用（检索不到，会新建一个）;如果cookie被禁用,客户端还可以通过url重写或者表单隐藏SESSIONID提交功能将SESSIONID传给服务器
+4. get和post传参有什么区别
+	1.Post传输数据时，不需要在URL中显示出来，而Get方法要在URL中显示。 
+	2.Post传输的数据量大，可以达到2M，而Get方法由于受到URL长度的限制,只能传递大约1024字节. 
+	3.Post顾名思义,就是为了将数据传送到服务器段,Get就是为了从服务器段取得数据.而Get之所以也能传送数据,只是用来设计告诉服务器,你到底需要什么样的数据.Post的信息作为http请求的内容，而Get是在Http头部传输的
+5. ajax异步去数据
+	$.ajax({
+	        type : "post",
+	        async : false, //发送同步请求
+	        cache:  false, //不缓存此页面
+	        url : "/index.php/goods_details/getAjaxComment",
+	        data : "commentId=" + commentId + "&is_virtual=" + is_virtual,
+	        dataType:"text",
+	        success:function(data)
+	        {
+	        	//alert(data);
+	        }
+	    });
+alert(temp);
+
+async的默认设置为true，所有请求均为异步请求。若要将其设置为false，则所有的请求均为同步请求，在没有返回值之前，alert(temp)是不会执行的。
